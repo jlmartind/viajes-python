@@ -1,0 +1,10 @@
+Objetivo
+
+ El objetivo de la práctica es realizar una aplicación para que una agencia de viajes pueda realizar busquedas simultaneas de la disponibilidad de estancias en uno o varios proveedores mediante el mismo formulario y teniendo como resultado el listado de todos. 
+
+ El formulario de petición puede ser bastante amplio, pero algunos de los valores no estarán incluidos, sino que se enviarán por defecto siempre con el mismo valor, por ejemplo el idioma en el que recibiremos los resultados que siempre será "español" o la categoría de establecimiento, que por defecto será "todas las categorias"
+
+ La consulta se realizará mediante un formulario común, cada proveedor indica el método para realizar la búsqueda y además para cada uno de ellos se necesita unas credenciales propias, las cuales se encontrarán almacenadas en el fichero "cuentas.cfg". Este fichero será privado y se encontrará almacenado de forma local, aunque se adjunta un ejemplo del fichero.
+
+ El resultado se mostrará mediante html en forma de listado, apareciendo en ésto sólo los datos de relevancia para la agencia.
+
