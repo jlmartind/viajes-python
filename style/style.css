@@ -1,0 +1,21 @@
+body {
+  text-align:center;
+  margin:30 auto;
+  font: 70%/160% "verdana", sans-serif;
+  color: #2E2E2E;
+}
+
+a {
+  text-decoration: none;
+}
+a:hover {
+  color: #FFF;
+} 
+
+a:visited {
+  color: #FFF;
+}
+
+
+
+
