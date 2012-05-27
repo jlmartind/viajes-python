@@ -1,11 +1,14 @@
 #!/usr/bin/python
 from lxml import etree
+import httplib,urllib,sys
 import cgi
 import cgitb
 cgitb.enable()
 print "Content-Type: text/html"     # HTML is following
 print                               # blank line, end of headers
+
 form = cgi.FieldStorage()
+
 #if "area" not in form or "region" not in form or "ciudad" not in form:
 #    print "<H1>Error</H1>"
 #    print "Por favor rellene los campos area, region o ciudad."
@@ -28,10 +31,20 @@ form = cgi.FieldStorage()
 #   # Definimos el listado que utilizaremos en el primer bucle
 #paises = arbolpais.xpath ("//country/@name")
 
-    # Indicamos el elemento raiz de petición con los atributos 'type',
+URL = 'http://wstest.rhodasol.es/wsserhs/rhodasol'
+
+try:
+    urllib.urlopen(URL).read()
+    print "Conectado al servidor",'\n'
+except:
+    print "No es posible conectar con el servidor"
+    sys.exit(1)
+
+
+# Indicamos el elemento raiz de petición con los atributos 'type',
     # 'version' y 'sessionId' 
 raizpeticion = etree.Element("request", \
-    attrib={"type":"ACCOMMODATIONS_AVAIL","version":"4.1","sessionId":"555123"})
+    attrib={"type":"ACCOMMODATIONS_AVAIL","version":"4.1","sessionId":"5551123"})
     # Creamos la estructura del arbol a partir del elemento raiz
 arbolpeticion = etree.ElementTree (raizpeticion)
     # Definimos el primer hijo del elemento raiz, es cliente y tiene
@@ -49,7 +62,7 @@ criterio = etree.SubElement(criterio_b,"criterion", \
 criterio = etree.SubElement(criterio_b,"criterion", \
     attrib={"type":"0", "code":"area", "value":""})
 criterio = etree.SubElement(criterio_b,"criterion", \
-    attrib={"type":"0", "code":"region", "value":""})
+    attrib={"type":"0", "code":"region", "value":"41"})
 criterio = etree.SubElement(criterio_b,"criterion", \
     attrib={"type":"0", "code":"city", "value":""})
 criterio = etree.SubElement(criterio_b,"criterion", \
@@ -78,4 +91,13 @@ habitaciones = etree.SubElement(raizpeticion, "rooms")
 habitacion = etree.SubElement(habitaciones, "room", \
     attrib={"type":"1", "adults":"2", "children":"0"})
 
-print etree.tostring(arbolpeticion,pretty_print=True)
+pet_xml = etree.tostring(arbolpeticion,pretty_print=True)
+
+print pet_xml
+
+parameter = urllib.urlencode({'XML': pet_xml})
+response = urllib.urlopen(URL, parameter)
+print response.read()
+
+
+# print etree.tostring(respuesta,pretty_print=True)
