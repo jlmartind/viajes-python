@@ -4,10 +4,10 @@ import urllib2,sys,urllib
 import cgi
 import cgitb
 
-
 cgitb.enable()
-print "Content-Type: text/html"     # HTML is following
-print                               # blank line, end of headers
+
+#Linea en blanco
+print     
 
 form = cgi.FieldStorage()
 
@@ -60,14 +60,14 @@ ficherocs.close()
 #   # Definimos el listado que utilizaremos en el primer bucle
 #paises = arbolpais.xpath ("//country/@name")
 
-URL = 'http://wstest.rhodasol.es/wsserhs/rhodasol'
+URL = direccion[0]
 
 #===============================================================================
 try:
     urllib.urlopen(URL).read()
     print "Conectado al servidor",'\n'
 except:
-    print "No es posible conectar con el servidor"
+    print "No es posible conectar con el servidor",'\n'
     sys.exit(1)
  
 #===============================================================================
@@ -81,7 +81,7 @@ arbolpeticion = etree.ElementTree (raizpeticion)
     # Definimos el primer hijo del elemento raiz, es cliente y tiene
     # atributos 'code','branch' y 'password'
 cliente = etree.SubElement(raizpeticion,"client",\
-    attrib={"code":"ESTTRV", "branch":"8249", "password":"ESTTRVtest"})
+    attrib={"code":"%s" %usuario[0], "branch":"%s" %sucursal[0], "password":"%s" %clave[0]})
     # Definimos el segundo hijo del raiz, es lenguaje y tiene el atributo 'code'
 lenguaje = etree.SubElement(raizpeticion,"languaje", attrib={"code":"SPA"})
     # Definimos el tercer hijo del raiz, es criterio_b y contiene más elementos
