@@ -176,6 +176,139 @@ print 'Resultados almacenados en el fichero "areas.html"'
 
 
 
+# consulta de datos estáticos Para las regiones de España
+#********************************************************
+
+# Se definen los atributos de los elementos del XML de la petición SOAP
+# de la siguiente manera (es necesario utilizar # suds >= 0.4):
+    
+class MyPlugin(MessagePlugin):
+    def marshalled(self, context):
+        body = context.envelope.getChild('Body')
+    # Elemento hijo del Body de SOAP, con atributos version y sessionId
+        destino = body[0]
+        destino.set('version', '5.0')
+        destino.set('sessionId', '5555')
+    # Primer elemento hijo de destino, con atributos password, branch y 
+    # code (utilizando las variables de la consulta al fichero de credenciales)
+        client = destino[0]
+        client.set('password', clave[0])
+        client.set('branch', sucursal[0])
+        client.set('code', usuario[0])
+    # Segundo elemento hijo de destino, con atributo code
+        language = destino[1]
+        language.set('code', 'SPA')
+    # Tercer elemento hijo de destino, con atributo code
+        country = destino[2]
+        country.set('code', 'ESP')
+
+    # URL WSDL del servicio SOAP (utilizando la variable de consulta credenciales)
+url = direccion[0]
+    # Instanciamos el cliente SOAP
+cliente = Client(url,plugins=[MyPlugin()])
+    # Queremos que las respuestas del cliente sean en XML
+cliente.set_options(retxml=True)
+
+# Formamos la salida del método GET_CITIES como html para las listas 
+# que necesitamos en nuestro formulario web
+
+    # Formateamos la salida del método
+arbolrees = etree.fromstring(cliente.service.GET_CITIES())
+    # Definimos el listado que utilizaremos en el primer bucle
+provinciasrees = arbolrees.xpath ("//region/@name")
+    # Indicamos el elemento raiz de nuestros datos con los atributos 'method' y 'action' 
+raizhtml_r_e = etree.Element("form",attrib={"method":"post","action":"viajes.py"})
+    # Creamos la estructura del arbil a partir del elemento raiz
+arbolhtml_r_e = etree.ElementTree (raizhtml_r_e)
+    # Bucle para la obtención de los nombres y códigos de ciudades
+for loc in provinciasrees:
+    nombre_pro = loc
+    ciudad = arbolrees.xpath ("//region[@name='%s']/cities/city/@name" %nombre_pro)
+    codigo_prov = arbolrees.xpath ("//region[@name='%s']/@code" %nombre_pro)
+    for locb in codigo_prov:
+    # Se crea el elemento region 
+        option = etree.SubElement(raizhtml_r_e, "option", attrib={"value":'%s'%locb})
+        option.text = '%s' %loc
+
+
+    # Creamos el fichero 'regioneses_esp.html' y le asignamos la variable 'ficherorees'
+ficherorees = open('regiones_esp.html', 'w')
+    # Escribimos el fichero con el contenido del arbol creado anteriormente
+ficherorees.write(etree.tostring(arbolhtml_r_e,pretty_print=True))
+    # Cerramos el fichero creado
+ficherorees.close()
+    # Se imprime un mensaje indicando el nombre del fichero creado
+    # éste mensaje sirve además para que el usuario compruebe que hay
+    # progreso en la ejecución, ya que ésta puede tardar
+print 'Resultados almacenados en el fichero "regiones_esp.html"'
+
+
+# consulta de datos estáticos Para las regiones de Portugal
+#**********************************************************
+
+# Se definen los atributos de los elementos del XML de la petición SOAP
+# de la siguiente manera (es necesario utilizar # suds >= 0.4):
+    
+class MyPlugin(MessagePlugin):
+    def marshalled(self, context):
+        body = context.envelope.getChild('Body')
+    # Elemento hijo del Body de SOAP, con atributos version y sessionId
+        destino = body[0]
+        destino.set('version', '5.0')
+        destino.set('sessionId', '5555')
+    # Primer elemento hijo de destino, con atributos password, branch y 
+    # code (utilizando las variables de la consulta al fichero de credenciales)
+        client = destino[0]
+        client.set('password', clave[0])
+        client.set('branch', sucursal[0])
+        client.set('code', usuario[0])
+    # Segundo elemento hijo de destino, con atributo code
+        language = destino[1]
+        language.set('code', 'SPA')
+    # Tercer elemento hijo de destino, con atributo code
+        country = destino[2]
+        country.set('code', 'PRT')
+
+    # URL WSDL del servicio SOAP (utilizando la variable de consulta credenciales)
+url = direccion[0]
+    # Instanciamos el cliente SOAP
+cliente = Client(url,plugins=[MyPlugin()])
+    # Queremos que las respuestas del cliente sean en XML
+cliente.set_options(retxml=True)
+
+# Formamos la salida del método GET_CITIES como html para las listas 
+# que necesitamos en nuestro formulario web
+
+    # Formateamos la salida del método
+arbolrept = etree.fromstring(cliente.service.GET_CITIES())
+    # Definimos el listado que utilizaremos en el primer bucle
+provinciasrept = arbolrept.xpath ("//region/@name")
+    # Indicamos el elemento raiz de nuestros datos con los atributos 'method' y 'action' 
+raizhtml_r_p = etree.Element("form",attrib={"method":"post","action":"viajes.py"})
+    # Creamos la estructura del arbil a partir del elemento raiz
+arbolhtml_r_p = etree.ElementTree (raizhtml_r_p)
+    # Bucle para la obtención de los nombres y códigos de ciudades
+for loc in provinciasrept:
+    nombre_pro = loc
+    ciudad = arbolrept.xpath ("//region[@name='%s']/cities/city/@name" %nombre_pro)
+    codigo_prov = arbolrept.xpath ("//region[@name='%s']/@code" %nombre_pro)
+    for locb in codigo_prov:
+    # Se crea el elemento region 
+        option = etree.SubElement(raizhtml_r_p, "option", attrib={"value":'%s'%locb})
+        option.text = '%s' %loc
+
+
+    # Creamos el fichero 'regioneses_esp.html' y le asignamos la variable 'ficherorees'
+ficherorept = open('regiones_por.html', 'w')
+    # Escribimos el fichero con el contenido del arbol creado anteriormente
+ficherorept.write(etree.tostring(arbolhtml_r_p,pretty_print=True))
+    # Cerramos el fichero creado
+ficherorept.close()
+    # Se imprime un mensaje indicando el nombre del fichero creado
+    # éste mensaje sirve además para que el usuario compruebe que hay
+    # progreso en la ejecución, ya que ésta puede tardar
+print 'Resultados almacenados en el fichero "regiones_por.html"'
+
 
 # consulta de datos estáticos Para las ciudades de España
 #********************************************************
@@ -229,11 +362,6 @@ for loc in provinciassp:
     for locb in codigo_prov:
     # Se crean los grupos de provincias (se muestra el nombre como título)
         optgroup = etree.SubElement(raizhtml_c_e, "optgroup",attrib={"label":'%s'%loc})
-    # Se repite de nuevo el mismo elemento pero esta vez como opción, indicando
-    # nombre y el valor que utiliza, añadimos la cadena '(provincia)' a continuación
-    # del nombre, ya que si se selecciona esta opción se busca en todo el grupo
-        option = etree.SubElement(optgroup, "option", attrib={"value":'%s'%locb})
-        option.text = '%s'' (provincia)' %loc
     
     # Con este bucle se listan las localidades de cada provincia
     for locc in ciudad:
@@ -308,11 +436,6 @@ for loc1 in provinciaspt:
     for locb1 in codigo_prov1:
     # Se crean los grupos de zonas (se muestra el nombre como título)
         optgroup = etree.SubElement(raizhtml_c_p, "optgroup",attrib={"label":'%s'%loc1})
-    # Se repite de nuevo el mismo elemento pero esta vez como opción, indicando
-    # nombre y el valor que utiliza, añadimos la cadena '(todo)' a continuación
-    # del nombre, ya que si se selecciona esta opción se busca en todo el grupo
-        option = etree.SubElement(optgroup, "option", attrib={"value":'%s'%locb1})
-        option.text = '%s'' (todo)' %loc1
     
     # Con este bucle se listan las localidades de cada zona
     for locc1 in ciudad1:
