@@ -4,6 +4,7 @@ from lxml import etree
 import urllib2,sys,urllib
 import cgi
 import cgitb
+import subprocess
 
 cgitb.enable()
 
@@ -63,6 +64,19 @@ v_alojamiento = form["alojamiento"].value
 v_habitaciones = form["habitaciones"].value
 v_adultos = form["adultos"].value
 
+# Comprobación de que se han introducido fichas de entrada y salida.
+try:
+    v_entrada = form["fechaentrada"].value
+    v_salida = form["fechasalida"].value
+except:
+    v_entrada = ''
+    v_salida = ''
+    print "<H1>Error</H1>"
+    print "<p> "
+    print "<H2>Por favor rellene las fechas de entrada y salida.</H2>"
+    print "<p> "
+
+
 # Comprobación de que al menos uno de los valores de zona se ha introducido
 if v_area == v_region == v_ciudad == 'vacio':
     print "<H1>Error</H1>"
@@ -71,9 +85,9 @@ if v_area == v_region == v_ciudad == 'vacio':
     print "<p> "
     
 else:
-    print "<p>pais: ", v_pais, ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
-    print "<p>regimen: ", v_regimen, ", alojamiento: ", v_alojamiento, 
-    print "<p>habitaciones: ", v_habitaciones, ", adultos: ", v_adultos
+#    print "<p>pais: ", v_pais, ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
+#    print "<p>regimen: ", v_regimen, ", alojamiento: ", v_alojamiento, 
+#    print "<p>habitaciones: ", v_habitaciones, ", adultos: ", v_adultos
     print "<p> "
 #print "<p>nino1:", form["nino1"].value
 #print "<p>nino2:", form["nino2"].value
@@ -91,9 +105,9 @@ if v_region == 'vacio':
 if v_ciudad == 'vacio':
     v_ciudad = ''
 
-print "<p>pais: ", v_pais, ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
-
-print "<p> "
+#print "<p>pais: ", v_pais, ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
+#print v_entrada, v_salida
+#print "<p> "
 
 if v_area != v_region != v_ciudad and v_region != v_area != v_ciudad:
     print "<H1>Error</H1>"
@@ -101,7 +115,7 @@ if v_area != v_region != v_ciudad and v_region != v_area != v_ciudad:
     print "<H2>Por favor rellene sólo uno de los campos área, región o ciudad.</H2>"
     print "<p> "
 else:
-    print ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
+#    print ",  area: ", v_area, ",  region:", v_region, ",  ciudad: ", v_ciudad
     print "<p> "
 
 
@@ -110,12 +124,15 @@ else:
 
 try:
     urllib.urlopen(URL).read()
-    print "Conectado al servidor",'\n'
+    print "<H2>Conectado al servidor</H2>"
     print "<p> "
+    print "<hr>"
 except:
-    print "No es posible conectar con el servidor",'\n'
+    print "<H1>Error</H1>"
     print "<p> "
-    sys.exit(1)
+    print "<H2>No es posible conectar con el servidor</H2>"
+    print "<p> "
+#    sys.exit(1)
  
  
 # Creación de la estructura XML de la petición 
@@ -175,57 +192,74 @@ habitacion = etree.SubElement(habitaciones, "room", \
 
 pet_xml = etree.tostring(arbolpeticion,pretty_print=True)
 
+#xml_cadena = lxml.etree.ElementTree.tostring(arbolpeticion)
 #pet_xml = open('peticion6.xml','r')
 
-#f = open("peticion.xml","w")
-#f.write(pet_xml)
-#f.close()
-#print pet_xml
+#fpet = open("/home/usuario/peticion.xml","w")
+#fpet.write(pet_xml)
+#fpet.close()
+
+print pet_xml
 
 #parameter = urllib.urlencode({'XML':pet_xml})
 #response = urllib.urlopen(URL, parameter)
 #result = response.read()
 
-opener = urllib2.build_opener()
-opener.addheaders = [('Accept', 'application/xml'),
-                    ('User-Agent', 'Python-urllib/2.6')]
+#ficheroxml = open ('peticion7.xml','r')
 
-
-req = urllib2.Request(url=URL, data= pet_xml,
-                      headers={'Content-Type': 'application/xml','language' : 'Python'})
-
-#req = urllib2.Request(url=URL, data=pet_xml)
-assert req.get_method() == 'POST'
-
-
-#values = {'name' : 'Michael Foord',
-#          'location' : 'Northampton',
-#          'language' : 'Python' }
-#
-#data = urllib.urlencode(values)
-#req = urllib2.Request(url, data)
-#response = urllib2.urlopen(req)
-#the_page = response.read()
-
-
-
-response = opener.open(req)
-print 'Respuesta del servidor',response.code
-print "<p> "
 
 #opener = urllib2.build_opener()
-#opener.addheaders = [('Accept', 'application/xml'),
-#                     ('Content-Type', 'application/xml'),
-#                     ('User-Agent', 'Python-urllib/2.6')]
+##opener.addheaders = [('Accept', 'application/xml'),
+#opener.addheaders = [('User-Agent', 'Python-urllib/2.6')]
 #
-#req = urllib2.Request(url=URL, data=pet_xml)
+#
+#req = urllib2.Request(url=URL, data= pet_xml,#headers={'language' : 'Python'}
+#                    headers={'Content-Type': 'Data','language' : 'Python'})
+#
+##req = urllib2.Request(url=URL, data=pet_xml)
 #assert req.get_method() == 'POST'
+##req.add_data(urllib.urlencode(pet_xml))
 #
-#response = opener.open(req)
-# 
-#respuesta = etree.fromstring(req)
-print response.read()
+#
+##values = {'name' : 'Michael Foord',
+##          'location' : 'Northampton',
+##          'language' : 'Python' }
+##
+##data = urllib.urlencode(values)
+##req = urllib2.Request(url, data)
+##response = urllib2.urlopen(req)
+##the_page = response.read()
+#
 
+
+#response = opener.open(req)
+#print 'Respuesta del servidor',response.code
+print "<p> "
+
+arbol_res=etree.parse("respuesta.xml")
+raiz=arbol_res.getroot()
+
+hotel = arbol_res.xpath ("//accommodation/@name")
+
+for ii in hotel:
+    nombre = ii
+    cat = arbol_res.xpath ("//accommodation[@name='%s']/category/@name" %nombre)
+    localidad = arbol_res.xpath ("//accommodation[@name='%s']/city/@name" %nombre)
+    habitacion = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept/@name" %nombre)
+    print "<h2>%s  %s  %s </h2>" %(ii, cat, localidad)
+    
+
+    for jj in habitacion:
+        cod_num = jj
+        ticket = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept[@name='%s']/boards/board/@ticket" %(ii,cod_num))
+        print "<p>%s" %habitacion
+        for kk in ticket:
+            var = kk
+            regimen = arbol_res.xpath ("//boards/board[@ticket='%s']/@name" %var)
+            politica = arbol_res.xpath ("//boards/board[@ticket='%s']/@cancelPolicyId" %var)
+            precio = arbol_res.xpath ("//boards/board[@ticket='%s']/price/@minAmount" %var)
+            print "<p>%s %s %s" %(regimen, politica, precio)
+    print "<hr>"
 #print etree.tostring(respuesta,pretty_print=True)
 print "<p> "
 print '<a href="http://localhost/index.html"><img src="http://localhost/images/atras.jpg" alt=""/> </a><br />Volver<br />'
