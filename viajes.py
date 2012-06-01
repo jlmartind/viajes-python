@@ -4,7 +4,6 @@ from lxml import etree
 import urllib2,sys,urllib
 import cgi
 import cgitb
-import subprocess
 
 cgitb.enable()
 
@@ -13,13 +12,16 @@ print                               # blank line, end of headers
 
 form = cgi.FieldStorage()
 
+# Favicon 
 print '<link rel="shortcut icon" href="http://localhost/images/favicon.ico">'
 
+# Cabecera HTML
 print "<head>"
 print "<title>Viajes Portofino</title>"
 print '<link rel="StyleSheet" href="http://localhost/style/style.css" type="text/css" media="screen"/>'
 print "</head>"
 
+# Inicio del body
 print "<body>"
 print '<img src="http://localhost/images/logo-agencia2.jpg"></img><br /><br />'
 
@@ -109,6 +111,7 @@ if v_ciudad == 'vacio':
 #print v_entrada, v_salida
 #print "<p> "
 
+# Comprobación de que sólo se ha introducido uno de los campos
 if v_area != v_region != v_ciudad and v_region != v_area != v_ciudad:
     print "<H1>Error</H1>"
     print "<p> "
@@ -236,11 +239,13 @@ print pet_xml
 #print 'Respuesta del servidor',response.code
 print "<p> "
 
+# Creación de la respuesta en HTML
 arbol_res=etree.parse("respuesta.xml")
 raiz=arbol_res.getroot()
 
 hotel = arbol_res.xpath ("//accommodation/@name")
 
+# Bucle por cada hotel/apartamento disponible
 for ii in hotel:
     nombre = ii
     cat = arbol_res.xpath ("//accommodation[@name='%s']/category/@name" %nombre)
@@ -248,11 +253,12 @@ for ii in hotel:
     habitacion = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept/@name" %nombre)
     print "<h2>%s  %s  %s </h2>" %(ii, cat[0], localidad[0])
     
-
+# Bucle por cada tipo de habitación disponible en cada hotel/apartamento
     for jj in habitacion:
         cod_num = jj
         ticket = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept[@name='%s']/boards/board/@ticket" %(ii,cod_num))
         print "<h3>%s</h3>" %cod_num
+# Bucle para mostrar los valores de cada tipo de habitación
         for kk in ticket:
             var = kk
             regimen = arbol_res.xpath ("//boards/board[@ticket='%s']/@name" %var)
