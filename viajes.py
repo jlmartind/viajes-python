@@ -246,19 +246,19 @@ for ii in hotel:
     cat = arbol_res.xpath ("//accommodation[@name='%s']/category/@name" %nombre)
     localidad = arbol_res.xpath ("//accommodation[@name='%s']/city/@name" %nombre)
     habitacion = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept/@name" %nombre)
-    print "<h2>%s  %s  %s </h2>" %(ii, cat, localidad)
+    print "<h2>%s  %s  %s </h2>" %(ii, cat[0], localidad[0])
     
 
     for jj in habitacion:
         cod_num = jj
         ticket = arbol_res.xpath ("//accommodation[@name='%s']/concepts/concept[@name='%s']/boards/board/@ticket" %(ii,cod_num))
-        print "<p>%s" %habitacion
+        print "<h3>%s</h3>" %cod_num
         for kk in ticket:
             var = kk
             regimen = arbol_res.xpath ("//boards/board[@ticket='%s']/@name" %var)
             politica = arbol_res.xpath ("//boards/board[@ticket='%s']/@cancelPolicyId" %var)
             precio = arbol_res.xpath ("//boards/board[@ticket='%s']/price/@minAmount" %var)
-            print "<p>%s %s %s" %(regimen, politica, precio)
+            print "<p>Regimen: %s, Política de cancelación: %s , Precio: %s  €" %(regimen[0], politica[0], precio[0])
     print "<hr>"
 #print etree.tostring(respuesta,pretty_print=True)
 print "<p> "
